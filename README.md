@@ -3,7 +3,7 @@
 - **Người nộp:** Phạm Khánh Linh – Khóa K3
 - **Hạn nộp:** 23h59 thứ Hai 19/10/2026
 - **Khoảnh khắc đã chọn:** Nhận kết quả (luồng: [luong-nhan-ket-qua.md](01-phong-van/luong-nhan-ket-qua.md); xác nhận lại sau phỏng vấn)
-- **Need statement (tóm tắt):** ______
+- **Need statement (tóm tắt):** Cách để người bệnh hiểu kết quả ở mức chung, biết chắc và làm được bước tiếp theo bác sĩ đã chỉ định, và nhận được câu trả lời của bác sĩ trong thời gian chấp nhận được, cho người nhận kết quả từ xa gặp tình trạng không hỏi được ngay ([chi tiết](03-need-statement/README.md))
 
 ## Mục lục
 | Thư mục | Nội dung |
@@ -29,7 +29,8 @@
 | Khung thư mục và template các file | Claude | Điền nội dung |
 | Nghiên cứu bàn giấy về MyVinmec (`nghien-cuu-MyVinmec.md`) | Claude tìm và tổng hợp từ nguồn công khai (có link) | Kiểm chứng bằng cách tự dùng app |
 | Interview guide | Claude soạn bản đầu (Mom Test) | Chỉnh theo khoảnh khắc đã chọn |
-| Phỏng vấn, ghi chép, quote, insight | Không | Toàn bộ |
+| Phỏng vấn (hỏi, ghi âm) | Không | Toàn bộ |
+| Tóm tắt ghi chép P1–P3, bảng insight, journey map, need statement (bản nháp) | Claude tóm tắt từ transcript của mình và dựng bản nháp | Nghe lại ghi âm, sửa, xác nhận trước khi nộp |
 | Dùng thử MyVinmec | Không (cột "Theo tài liệu" do AI tóm tắt) | Cột "Mình thấy" và đối chiếu |
 | ... | | |
 

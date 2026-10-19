@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototype v1 - Kết quả của bạn</title>
+<style>
+:root{--bg:#eef2f1;--ink:#17262b;--mute:#5c6b70;--line:#d6dfdd;--card:#fff;--brand:#176b6b;--brand-ink:#fff;--warn:#b4372b;--warn-bg:#fdecea;--ok:#2f7d4f;--ok-bg:#e8f4ec;--note:#8a6a12;--note-bg:#fff6dc}
+@media (prefers-color-scheme:dark){:root{--bg:#10191b;--ink:#e6eeee;--mute:#9fb0b3;--line:#2b3b3e;--card:#18262a;--brand:#4fb3b0;--brand-ink:#0b1a1b;--warn:#ff8f82;--warn-bg:#3a1c19;--ok:#7fd1a1;--ok-bg:#16301f;--note:#e8c768;--note-bg:#342b10}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.demo{max-width:430px;margin:0 auto;padding:10px 16px 0}
+.banner{background:var(--note-bg);color:var(--note);border-radius:8px;padding:8px 12px;font-size:13px}
+.bar{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+.bar button{flex:1;min-width:110px}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer}
+button.primary{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:600}
+button.on{outline:2px solid var(--brand)}
+button:disabled{opacity:.5;cursor:default}
+.phone{max-width:430px;margin:0 auto 24px;background:var(--bg);min-height:640px;padding:0 16px 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+h1{font-size:20px;margin:14px 0 4px}h2{font-size:16px;margin:0 0 6px}
+.mute{color:var(--mute);font-size:14px}.tiny{font-size:12px;color:var(--mute)}
+.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;background:var(--ok-bg);color:var(--ok);font-weight:600}
+.badge.ai{background:var(--note-bg);color:var(--note)}
+.sms{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:16px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.flag{color:var(--warn);font-weight:600}
+.emerg{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:8px 12px;font-size:14px;margin-top:12px}
+.emerg.big{font-size:15px;padding:12px}
+details{margin-top:6px}summary{cursor:pointer;color:var(--brand);font-size:14px}
+.bubble{border-radius:12px;padding:10px 12px;margin:8px 0;max-width:92%;white-space:pre-wrap}
+.me{background:var(--brand);color:var(--brand-ink);margin-left:auto}
+.bot{background:var(--card);border:1px solid var(--line)}
+.who{font-size:12px;color:var(--mute);margin-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chips button{padding:6px 10px;font-size:14px;border-radius:99px}
+.inp{display:flex;gap:8px;margin-top:10px}
+input[type=text],textarea,input[type=date]{font:inherit;width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+textarea{min-height:170px}
+.steps{display:flex;gap:6px;margin:8px 0;font-size:12px}
+.steps span{flex:1;text-align:center;padding:6px 2px;border-radius:8px;background:var(--card);border:1px solid var(--line);color:var(--mute)}
+.steps span.done{background:var(--ok-bg);color:var(--ok);border-color:transparent;font-weight:600}
+.note{background:var(--note-bg);color:var(--note);border-radius:8px;padding:8px 10px;font-size:13px;margin:8px 0}
+.log{font:12px/1.4 ui-monospace,Consolas,monospace;white-space:pre-wrap;max-height:160px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px}
+.back{background:none;border:0;color:var(--brand);padding:8px 0;font-size:14px}
+</style>
+</head>
+<body>
+<div class="demo">
+  <div class="banner"><b>PROTOTYPE HỌC TẬP v1.</b> Toàn bộ dữ liệu là giả. "AI" ở đây được <b>mô phỏng bằng kịch bản</b> (không gọi mô hình thật); bác sĩ do người thật đóng vai. Không phải sản phẩm của Vinmec.</div>
+  <div class="bar">
+    <button id="rolePatient" class="on">Người bệnh</button>
+    <button id="roleDoctor">Bác sĩ (demo)</button>
+    <button id="reset">Đặt lại</button>
+  </div>
+</div>
+<main class="phone" id="app" aria-live="polite"></main>
+<div class="demo">
+  <details><summary>Nhật ký thao tác (cho người quan sát)</summary><div class="log" id="log"></div></details>
+  <p class="tiny">Nhắc người thử: không gõ thông tin sức khỏe thật của bạn. Prototype không lưu gì sau khi đóng trang.</p>
+</div>
+<script>
+// ===== Dữ liệu giả =====
+const RECORD = {
+  patient: "Người bệnh giả (A.)",
+  visit: "Khám sức khỏe tổng quát (ngày khám giả)",
+  items: [
+    {name:"Đường huyết lúc đói", value:"6,4 mmol/L", ref:"3,9 – 5,6", out:true,
+     what:"Đo lượng đường trong máu sau khi nhịn ăn. Khoảng tham chiếu là khoảng in trên phiếu để so sánh; một con số ngoài khoảng này chưa cho biết nguyên nhân hay mức độ."},
+    {name:"Cholesterol toàn phần", value:"4,8 mmol/L", ref:"< 5,2", out:false,
+     what:"Đo tổng lượng mỡ máu (cholesterol). Nằm trong khoảng tham chiếu in trên phiếu."},
+    {name:"Huyết sắc tố (Hb)", value:"142 g/L", ref:"130 – 170", out:false,
+     what:"Đo lượng huyết sắc tố trong máu. Nằm trong khoảng tham chiếu in trên phiếu."}
+  ],
+  // Lời dặn bác sĩ ĐÃ GHI trong hồ sơ giả. AI chỉ được diễn đạt lại từ đây.
+  doctorNote: {
+    lifestyle: "Giảm đồ ngọt và nước uống có đường; vận động ít nhất 30 phút mỗi ngày.",
+    followup: "Tái khám và làm lại xét nghiệm đường huyết lúc đói sau 3 tháng."
+  }
+};
+const SLA = "24–48 giờ (cam kết giả định cho prototype)";
+
+// ===== Trạng thái =====
+let S;
+function fresh(){S={role:"patient",screen:"sms",booked:null,remind:false,chat:[],q:null,drafting:null,log:[],blocked:false};}
+fresh();
+const $=s=>document.querySelector(s);
+function log(t){const d=new Date();S.log.push(d.toLocaleTimeString("vi-VN")+"  "+t);$("#log").textContent=S.log.join("\n");}
+function el(tag,attrs={},...kids){const e=document.createElement(tag);for(const[k,v]of Object.entries(attrs)){if(k==="class")e.className=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v);}for(const c of kids.flat()){if(c==null)continue;e.append(c.nodeType?c:document.createTextNode(c));}return e;}
+
+// ===== "AI" mô phỏng bằng kịch bản =====
+const URGENT=/(đau ngực|khó thở|ngất|co giật|liệt|nôn ra máu|ho ra máu|chảy máu (nhiều|không)|không thở|tự tử|muốn chết|tự làm hại)/i;
+const MEDICAL=/(vì sao|tại sao|nguyên nhân|ăn gì|ăn uống|kiêng|sinh hoạt|tập|nghiêm trọng|nguy hiểm|có sao không|bệnh gì|có bị bệnh|uống thuốc|thuốc gì|liều|điều trị|cách khắc phục|khắc phục)/i;
+const PROC=[
+ {re:/(xem|ở đâu|mục nào).*(kết quả)|kết quả.*(ở đâu|mục nào)/i, a:"Kết quả nằm ở mục \"Kết quả của bạn\" (màn hình bạn vừa xem). Nếu muốn bản giấy, bạn có thể yêu cầu tại quầy của cơ sở khám. (Nội dung giả cho prototype.)"},
+ {re:/(bản giấy|giấy)/i, a:"Bạn có thể yêu cầu bản giấy tại quầy của cơ sở khám. (Nội dung giả cho prototype.)"},
+ {re:/(tái khám|đặt lịch|hẹn)/i, a:"Bạn bấm nút \"Đặt lịch tái khám\" ở thẻ \"Việc cần làm tiếp\" ở màn hình kết quả. Thời điểm tái khám lấy từ chỉ định của bác sĩ."},
+ {re:/(đơn thuốc|mua thuốc|nhà thuốc)/i, a:"Nếu bác sĩ có kê đơn thì đơn nằm ở mục Đơn thuốc, và bạn tự chọn nơi mua. Mình không tư vấn về thuốc; câu hỏi về thuốc sẽ chuyển bác sĩ."},
+ {re:/(bao lâu|khi nào|mất bao|bao giờ).*(trả lời|phản hồi)|(trả lời|phản hồi).*(bao lâu|khi nào)/i, a:"Bác sĩ cam kết trả lời trong "+SLA+"."},
+ {re:/(nhầm số|sai số|số điện thoại|không nhận được tin|tin nhắn)/i, a:"Tin nhắn chỉ báo \"đã có kết quả\", không chứa nội dung kết quả. Nếu bạn nghi tin gửi nhầm số hoặc không nhận được, hãy báo cho người thật tại quầy hoặc hotline ghi trên phiếu khám."}
+];
+function botReply(text){
+  if(URGENT.test(text)) return {type:"urgent"};
+  if(MEDICAL.test(text)) return {type:"doctor"};
+  for(const p of PROC) if(p.re.test(text)) return {type:"proc",text:p.a};
+  return {type:"fallback"};
+}
+// Soạn nháp cho bác sĩ: chỉ diễn đạt lại lời dặn đã có; phần chưa có -> để trống cho bác sĩ.
+function makeSummary(text){
+  const parts=[];
+  if(/(vì sao|tại sao|nguyên nhân)/i.test(text)) parts.push("hỏi nguyên nhân");
+  if(/(ăn|kiêng|sinh hoạt|tập|khắc phục)/i.test(text)) parts.push("hỏi cách điều chỉnh sinh hoạt");
+  if(/(nghiêm trọng|nguy hiểm|có sao)/i.test(text)) parts.push("hỏi mức độ nghiêm trọng");
+  if(/(thuốc|liều|điều trị)/i.test(text)) parts.push("hỏi về thuốc / điều trị");
+  if(!parts.length) parts.push("câu hỏi về kết quả");
+  return "Chỉ số liên quan: Đường huyết lúc đói (6,4 mmol/L, ngoài khoảng tham chiếu). Người bệnh "+parts.join("; ")+".";
+}
+function makeDraft(text){
+  const n=RECORD.doctorNote, L=[];
+  L.push("Chào anh/chị, bác sĩ trả lời câu hỏi của anh/chị về kết quả khám.");
+  const asksLife=/(ăn|kiêng|sinh hoạt|tập|khắc phục)/i.test(text);
+  const asksOther=/(vì sao|tại sao|nguyên nhân|nghiêm trọng|nguy hiểm|có sao|thuốc|liều|điều trị)/i.test(text);
+  if(asksLife||!asksOther) L.push("Theo lời dặn bác sĩ đã ghi trong hồ sơ: "+n.lifestyle);
+  L.push("Bước tiếp theo bác sĩ đã chỉ định: "+n.followup);
+  if(asksOther) L.push("[BÁC SĨ BỔ SUNG: phần này chưa có trong lời dặn đã ghi (nguyên nhân / mức độ / thuốc). Trợ lý không tự trả lời.]");
+  L.push("Nếu có dấu hiệu bất thường hoặc khẩn cấp, anh/chị gọi 115 hoặc đến cơ sở y tế gần nhất ngay.");
+  return L.join("\n\n");
+}
+
+// ===== Giao diện =====
+function render(){
+  const app=$("#app");app.replaceChildren();
+  $("#rolePatient").classList.toggle("on",S.role==="patient");
+  $("#roleDoctor").classList.toggle("on",S.role==="doctor");
+  if(S.role==="doctor") return renderDoctor(app);
+  if(S.screen==="sms") return renderSms(app);
+  if(S.screen==="result") return renderResult(app);
+  if(S.screen==="ask") return renderAsk(app);
+}
+function emergStrip(big){return el("div",{class:"emerg"+(big?" big":"")},"Đang có dấu hiệu khẩn cấp? Gọi ",el("b",{},"115")," hoặc đến cơ sở y tế gần nhất ngay. (Kiểm tra lại quy trình khẩn cấp của cơ sở trước khi dùng thật.)");}
+
+function renderSms(app){
+  app.append(el("h1",{},"Tin nhắn"),
+    el("div",{class:"sms"},
+      el("div",{class:"tiny"},"[Prototype] Cơ sở khám (giả) · vừa xong"),
+      el("p",{},"Kết quả khám của anh/chị đã sẵn sàng. Mở ứng dụng để xem."),
+      el("p",{class:"tiny"},"Tin nhắn này không chứa nội dung kết quả, để tránh lộ thông tin nếu gửi nhầm số.")),
+    el("button",{class:"primary",style:"width:100%;margin-top:12px",onclick:()=>{S.screen="result";log("Mở ứng dụng từ tin nhắn");render();}},"Mở ứng dụng"));
+}
+function renderResult(app){
+  app.append(el("h1",{},"Kết quả của bạn"),
+    el("div",{class:"mute"},RECORD.visit),
+    el("div",{style:"margin-top:6px"},el("span",{class:"badge"},"Bác sĩ đã xem · ký số (giả)")));
+  const c=el("div",{class:"card"},el("h2",{},"Các chỉ số"));
+  RECORD.items.forEach(it=>{
+    c.append(el("div",{class:"row"},
+      el("div",{},el("div",{},it.name),el("div",{class:"tiny"},"Khoảng tham chiếu: "+it.ref)),
+      el("div",{class:it.out?"flag":""},it.value+(it.out?" ⚠":""))),
+      el("details",{},el("summary",{},"Chỉ số này là gì?"),el("div",{class:"mute"},it.what,el("div",{class:"tiny"},"Nội dung chung, do bác sĩ duyệt (giả định). Không nói về trường hợp riêng của bạn.")))
+    );
+  });
+  app.append(c);
+  const todo=el("div",{class:"card"},el("h2",{},"Việc cần làm tiếp"),
+    el("div",{},RECORD.doctorNote.followup),
+    el("div",{class:"tiny"},"Lấy từ chỉ định của bác sĩ."));
+  if(S.booked){todo.append(el("div",{class:"note",style:"background:var(--ok-bg);color:var(--ok)"},"Đã đặt lịch (giả): "+S.booked+(S.remind?" · sẽ nhắc bạn trước 3 ngày":"")));}
+  else{
+    const d=el("input",{type:"date","aria-label":"Chọn ngày tái khám"});
+    const r=el("label",{class:"tiny",style:"display:block;margin:6px 0"},el("input",{type:"checkbox",onchange:e=>{S.remind=e.target.checked}})," Nhắc tôi trước 3 ngày (qua thông báo, không chứa nội dung kết quả)");
+    const b=el("button",{class:"primary",style:"width:100%;margin-top:6px",onclick:()=>{if(!d.value){d.focus();return;}S.booked=d.value;log("Đặt lịch tái khám (giả): "+d.value+(S.remind?", bật nhắc":""));render();}},"Đặt lịch tái khám");
+    todo.append(d,r,b);
+  }
+  app.append(todo);
+  const ask=el("div",{class:"card"},el("h2",{},"Còn thắc mắc về kết quả?"),
+    el("div",{class:"mute"},"Hỏi bác sĩ, bác sĩ trả lời trong "+SLA+"."),
+    el("button",{class:"primary",style:"width:100%;margin-top:8px",onclick:()=>{S.screen="ask";log("Mở màn hình Hỏi bác sĩ");render();}},"Hỏi bác sĩ về kết quả này"));
+  app.append(ask,emergStrip(false));
+}
+function stepsEl(){
+  const st=S.q?S.q.status:null;
+  const idx={sent:1,viewing:2,replied:3}[st]||0;
+  return el("div",{class:"steps"},
+    ["Đã gửi","Bác sĩ đang xem","Đã trả lời"].map((t,i)=>el("span",{class:i<idx?"done":""},t)));
+}
+function renderAsk(app){
+  app.append(el("button",{class:"back",onclick:()=>{S.screen="result";render();}},"← Kết quả của bạn"),
+    el("h1",{},"Hỏi bác sĩ"),
+    el("div",{class:"mute"},"Trợ lý (mô phỏng) trả lời câu hỏi thủ tục. Câu hỏi y khoa sẽ do bác sĩ trả lời."),
+    emergStrip(false));
+  if(S.blocked){
+    app.append(el("div",{class:"emerg big"},el("b",{},"Dừng lại."),"\nNếu bạn hoặc người thân đang có tình trạng khẩn cấp, hãy gọi ",el("b",{},"115")," hoặc đến cơ sở y tế gần nhất ngay, hoặc nói với người ở gần bạn. Trợ lý không tiếp tục trả lời tin nhắn này."),
+      el("button",{style:"width:100%;margin-top:8px",onclick:()=>{S.blocked=false;render();}},"Tôi đã hiểu, quay lại"));
+    return;
+  }
+  const box=el("div",{});
+  S.chat.forEach(m=>{
+    if(m.from==="me"){box.append(el("div",{class:"bubble me"},m.text));}
+    else{box.append(el("div",{class:"who"},m.label||"Trợ lý thủ tục (mô phỏng)"),el("div",{class:"bubble bot"},m.text));}
+  });
+  app.append(box);
+  if(S.q){
+    app.append(el("div",{class:"card"},el("h2",{},"Câu hỏi gửi bác sĩ"),
+      el("div",{class:"tiny"},"Tóm tắt do trợ lý soạn:"),el("div",{},S.q.summary),
+      el("div",{class:"tiny",style:"margin-top:6px"},"Câu hỏi của bạn:"),el("div",{},"“"+S.q.text+"”"),
+      stepsEl()));
+    if(S.q.status==="replied"){
+      app.append(el("div",{class:"card"},el("span",{class:"badge"},"Bác sĩ đã duyệt và gửi"),
+        el("div",{class:"bubble bot",style:"margin-top:8px;max-width:100%"},S.q.reply),
+        el("div",{class:"tiny"},"Bản nháp do trợ lý soạn từ lời dặn của bác sĩ; bác sĩ đã đọc, sửa và duyệt trước khi gửi.")));
+    }else{
+      app.append(el("div",{class:"tiny"},"Cam kết phản hồi: "+SLA+". Trong prototype, hãy chuyển sang \"Bác sĩ (demo)\" để đóng vai bác sĩ."));
+    }
+  }
+  if(S.drafting){
+    app.append(el("div",{class:"card"},el("h2",{},"Gửi câu hỏi này cho bác sĩ?"),
+      el("div",{class:"mute"},"Câu hỏi này cần bác sĩ trả lời, trợ lý không tự trả lời."),
+      el("div",{style:"margin:6px 0"},S.drafting.summary),
+      el("button",{class:"primary",style:"width:100%",onclick:()=>{S.q={text:S.drafting.text,summary:S.drafting.summary,status:"sent",draft:makeDraft(S.drafting.text),reply:null};S.drafting=null;log("Gửi câu hỏi cho bác sĩ: "+S.q.text);S.chat.push({from:"bot",label:"Hệ thống",text:"Đã gửi cho bác sĩ. Bác sĩ cam kết trả lời trong "+SLA+"."});render();}},"Gửi bác sĩ"),
+      el("button",{style:"width:100%;margin-top:6px",onclick:()=>{S.drafting=null;render();}},"Không gửi")));
+    return;
+  }
+  if(!S.q){
+    const chips=el("div",{class:"chips"},
+      ["Kết quả xem ở đâu?","Đặt tái khám thế nào?","Bao lâu bác sĩ trả lời?","Vì sao chỉ số của tôi cao và tôi nên ăn uống thế nào?"].map(t=>el("button",{onclick:()=>send(t)},t)));
+    const inp=el("input",{type:"text",placeholder:"Gõ câu hỏi của bạn...","aria-label":"Câu hỏi"});
+    const go=()=>{if(inp.value.trim())send(inp.value.trim());};
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+    app.append(chips,el("div",{class:"inp"},inp,el("button",{class:"primary",onclick:go},"Gửi")));
+  }
+}
+function send(text){
+  S.chat.push({from:"me",text});
+  const r=botReply(text);
+  log("Người bệnh hỏi: "+text+"  → "+r.type);
+  if(r.type==="urgent"){S.blocked=true;}
+  else if(r.type==="doctor"){S.chat.push({from:"bot",text:"Câu hỏi này cần bác sĩ trả lời. Mình soạn giúp bạn bản tóm tắt để gửi bác sĩ."});S.drafting={text,summary:makeSummary(text)};}
+  else if(r.type==="proc"){S.chat.push({from:"bot",text:r.text});}
+  else{S.chat.push({from:"bot",text:"Mình chưa chắc câu này thuộc phần nào. Bạn có thể hỏi lại ngắn hơn, hoặc nói chuyện với người thật tại quầy / hotline ghi trên phiếu khám."});}
+  render();
+}
+function renderDoctor(app){
+  app.append(el("h1",{},"Màn hình bác sĩ (demo)"),el("div",{class:"mute"},"Chỉ để đóng vai khi thử. Người bệnh không thấy màn hình này."));
+  if(!S.q||S.q.status==="replied"){
+    app.append(el("div",{class:"card"},S.q?"Không có câu hỏi nào đang chờ. Đã trả lời xong.":"Chưa có câu hỏi nào được gửi."));return;
+  }
+  if(S.q.status==="sent"){S.q.status="viewing";log("Bác sĩ mở câu hỏi");}
+  app.append(el("div",{class:"card"},el("h2",{},"Câu hỏi của người bệnh"),el("div",{},S.q.summary),el("div",{class:"tiny",style:"margin-top:6px"},"Nguyên văn: “"+S.q.text+"”")),
+    el("div",{class:"card"},el("h2",{},"Lời dặn đã ghi trong hồ sơ"),
+      el("div",{},"• "+RECORD.doctorNote.lifestyle),el("div",{},"• "+RECORD.doctorNote.followup),
+      el("div",{class:"tiny"},"Trợ lý chỉ được diễn đạt lại nội dung này.")));
+  const ta=el("textarea",{"aria-label":"Bản nháp trả lời"});ta.value=S.q.draft;
+  app.append(el("div",{class:"card"},el("span",{class:"badge ai"},"Bản nháp do trợ lý soạn, chưa gửi"),
+    el("div",{class:"note"},"Đọc kỹ, sửa và điền các phần trong [ ]. Chỉ khi bạn bấm \"Duyệt và gửi\" thì người bệnh mới thấy."),ta,
+    el("button",{class:"primary",style:"width:100%;margin-top:8px",onclick:()=>{
+      if(/\[BÁC SĨ BỔ SUNG/.test(ta.value)){ta.focus();if(!document.getElementById("warn")){ta.before(el("div",{id:"warn",class:"emerg"},"Vẫn còn phần [BÁC SĨ BỔ SUNG] chưa điền. Hãy điền hoặc xóa dòng đó rồi bấm lại."));}return;}
+      S.q.reply=ta.value;S.q.status="replied";log("Bác sĩ duyệt và gửi trả lời");S.role="patient";S.screen="ask";render();}},"Duyệt và gửi"),
+    el("div",{class:"tiny",style:"margin-top:6px"},"Muốn tự viết: xóa nháp và gõ lại trong ô trên.")));
+}
+$("#rolePatient").onclick=()=>{S.role="patient";render();};
+$("#roleDoctor").onclick=()=>{S.role="doctor";log("Chuyển sang vai bác sĩ");render();};
+$("#reset").onclick=()=>{fresh();$("#log").textContent="";render();};
+render();
+</script>
+</body>
+</html>
