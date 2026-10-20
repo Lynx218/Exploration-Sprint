@@ -1,0 +1,55 @@
+[
+  {
+    "id": "s1",
+    "title": "Kịch bản 1: đường huyết (giả)",
+    "visit": "Khám sức khỏe tổng quát (ngày khám giả)",
+    "relatedItem": "Đường huyết lúc đói",
+    "items": [
+      {"name": "Đường huyết lúc đói", "value": "6,4 mmol/L", "ref": "3,9 – 5,6", "out": true,
+       "what": "Đo lượng đường trong máu sau khi nhịn ăn. Khoảng tham chiếu là khoảng in trên phiếu để so sánh; một con số ngoài khoảng này chưa cho biết nguyên nhân hay mức độ."},
+      {"name": "Cholesterol toàn phần", "value": "4,8 mmol/L", "ref": "< 5,2", "out": false,
+       "what": "Đo tổng lượng mỡ máu (cholesterol). Nằm trong khoảng tham chiếu in trên phiếu."},
+      {"name": "Huyết sắc tố (Hb)", "value": "142 g/L", "ref": "130 – 170", "out": false,
+       "what": "Đo lượng huyết sắc tố trong máu. Nằm trong khoảng tham chiếu in trên phiếu."}
+    ],
+    "doctorNote": {
+      "lifestyle": "Giảm đồ ngọt và nước uống có đường; vận động ít nhất 30 phút mỗi ngày.",
+      "followup": "Tái khám và làm lại xét nghiệm đường huyết lúc đói sau 3 tháng.",
+      "other": ""
+    }
+  },
+  {
+    "id": "s2",
+    "title": "Kịch bản 2: mỡ máu (giả)",
+    "visit": "Khám sức khỏe định kỳ (ngày khám giả)",
+    "relatedItem": "LDL-Cholesterol",
+    "items": [
+      {"name": "LDL-Cholesterol", "value": "3,9 mmol/L", "ref": "< 3,4", "out": true,
+       "what": "Đo một loại cholesterol trong máu. Khoảng tham chiếu là khoảng in trên phiếu; con số ngoài khoảng chưa cho biết nguyên nhân hay mức độ."},
+      {"name": "Triglyceride", "value": "1,4 mmol/L", "ref": "< 1,7", "out": false,
+       "what": "Đo một loại mỡ trong máu. Nằm trong khoảng tham chiếu in trên phiếu."}
+    ],
+    "doctorNote": {
+      "lifestyle": "Giảm thức ăn nhiều mỡ động vật, tăng rau xanh; vận động ít nhất 30 phút mỗi ngày.",
+      "followup": "Làm lại xét nghiệm mỡ máu sau 3 tháng.",
+      "other": ""
+    }
+  },
+  {
+    "id": "s3",
+    "title": "Kịch bản 3: men gan (giả)",
+    "visit": "Khám sức khỏe tổng quát (ngày khám giả)",
+    "relatedItem": "ALT (men gan)",
+    "items": [
+      {"name": "ALT (men gan)", "value": "52 U/L", "ref": "< 40", "out": true,
+       "what": "Đo một loại enzym trong máu. Khoảng tham chiếu là khoảng in trên phiếu; con số ngoài khoảng chưa cho biết nguyên nhân hay mức độ."},
+      {"name": "Creatinine", "value": "78 µmol/L", "ref": "62 – 106", "out": false,
+       "what": "Đo một chất trong máu thường dùng để đánh giá chức năng thận. Nằm trong khoảng tham chiếu in trên phiếu."}
+    ],
+    "doctorNote": {
+      "lifestyle": "Hạn chế rượu bia; ngủ đủ giấc.",
+      "followup": "Làm lại xét nghiệm men gan sau 6 tuần.",
+      "other": "Không tự ý dùng thêm thực phẩm chức năng khi chưa hỏi bác sĩ."
+    }
+  }
+]

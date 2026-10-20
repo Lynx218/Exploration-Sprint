@@ -32,6 +32,7 @@
 | Phỏng vấn (hỏi, ghi âm) | Không | Toàn bộ |
 | Tóm tắt ghi chép P1–P3, bảng insight, journey map, need statement (bản nháp) | Claude tóm tắt từ transcript của mình và dựng bản nháp | Nghe lại ghi âm, sửa, xác nhận trước khi nộp |
 | Dùng thử MyVinmec | Không (cột "Theo tài liệu" do AI tóm tắt) | Cột "Mình thấy" và đối chiếu |
+| Coach plan (`07-coach-plan`) | Claude soạn khung và bản nháp nội dung | Chỉnh theo kinh nghiệm thật khi làm bài |
 | ... | | |
 
 > Mọi dữ liệu phỏng vấn, trích dẫn và kết quả thử nghiệm trong repo này là dữ liệu thật do mình thu thập; AI không tạo hay bịa dữ liệu.

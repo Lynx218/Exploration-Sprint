@@ -1,6 +1,6 @@
 # Prototype có AI
 
-> **v1 đã dựng (20/10/2026), do Claude viết code theo quyết định của Linh.** Là prototype click được trong một file HTML. **Phần "AI" trong v1 là mô phỏng bằng kịch bản, không gọi mô hình thật; bác sĩ do người thật đóng vai (Wizard-of-Oz).** Kế hoạch gốc: [ke-hoach-xay-dung.md](ke-hoach-xay-dung.md). Chưa thử với người dùng thật.
+> **v1 và v2 đã dựng (20/10/2026), do Claude viết code theo quyết định của Linh.** v2 (AI thật qua Gemini, chưa chạy với khóa thật) nằm ở [v2/](v2/README.md); luồng "bác sĩ gọi trước khi xem" (chưa đưa vào v2) ở [luong-bac-si-goi-truoc.md](luong-bac-si-goi-truoc.md). **Mô tả dưới đây là v1.** Là prototype click được trong một file HTML. **Phần "AI" trong v1 là mô phỏng bằng kịch bản, không gọi mô hình thật; bác sĩ do người thật đóng vai (Wizard-of-Oz).** Kế hoạch gốc: [ke-hoach-xay-dung.md](ke-hoach-xay-dung.md). Chưa thử với người dùng thật.
 
 ## Hướng AI an toàn
 AI chỉ hỗ trợ **thủ tục** và **soạn nháp cho bác sĩ duyệt**, không diễn giải y khoa:
@@ -20,6 +20,8 @@ AI làm gì: trả lời câu hỏi thủ tục; hỗ trợ soạn câu hỏi; s
 
 ## Các file
 - [`ke-hoach-xay-dung.md`](ke-hoach-xay-dung.md): kế hoạch xây dựng
+- [`yeu-cau-v2.md`](yeu-cau-v2.md), [`v2/`](v2/README.md): yêu cầu và mã nguồn v2
+- [`luong-bac-si-goi-truoc.md`](luong-bac-si-goi-truoc.md): luồng "bác sĩ gọi trước khi xem kết quả" (chưa vào v2)
 - `prompts.md`: prompt hệ thống và prompt thử nghiệm đã dùng
 - `test-log.md`: log thử với 2–3 người
 - [`prototype-v1.html`](prototype-v1.html): prototype
